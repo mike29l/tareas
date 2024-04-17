@@ -1,0 +1,86 @@
+Practica 08
+
+Switch#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Switch(config)#hostname Laboratorio1
+Laboratorio1(config)#inter range fa0/1-4
+Laboratorio1(config-if-range)#channel - protocol lacp
+% Ambiguous command: "channel - protocol lacp"
+Laboratorio1(config-if-range)#channel-protocol lacp
+Laboratorio1(config-if-range)#channel-group 1 mode active
+Laboratorio1(config-if-range)#
+
+end
+Laboratorio1#wr
+Building configuration...
+[OK]
+Laboratorio1#sh etherchannel summary
+
+Switch>ena
+Switch#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Switch(config)#hostname Laboratorio2
+Laboratorio2(config)#inter range fa0/1-4
+Laboratorio2(config-if-range)#channel-protocol lacp	
+Laboratorio2(config-if-range)#channel-group 1 mode active
+Laboratorio2(config-if-range)#
+Laboratorio1#sh etherchannel summary
+
+1      Po1(SU)           LACP   Fa0/1(P) Fa0/2(P) Fa0/3(P) Fa0/4(P) 
+
+Laboratorio1#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Laboratorio1(config)#inter range fa0/13-18
+Laboratorio1(config-if-range)#channel-protocol pagp
+Laboratorio1(config-if-range)#channel-group 2 mode desirable
+Laboratorio1(config-if-range)#
+
+Group  Port-channel  Protocol    Ports
+------+-------------+-----------+----------------------------------------------
+
+1      Po1(SU)           LACP   Fa0/1(P) Fa0/2(P) Fa0/3(P) Fa0/4(P) 
+2      Po2(SD)           PAgP   Fa0/13(I) Fa0/14(I) Fa0/15(I) Fa0/16(I) Fa0/17(I) Fa0/18(I)
+
+Paso 3
+Site#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Site(config)#inter range g0/1-2
+Site(config-if-range)#channel-protocol lacp
+Site(config-if-range)#channel-group 3 mode active
+Site(config-if-range)#
+Creating a port-channel interface Port-channel 3
+
+
+Site#sh etherchannel summary
+Flags:  D - down        P - in port-channel
+        I - stand-alone s - suspended
+        H - Hot-standby (LACP only)
+        R - Layer3      S - Layer2
+        U - in use      f - failed to allocate aggregator
+        u - unsuitable for bundling
+        w - waiting to be aggregated
+        d - default port
+
+
+Number of channel-groups in use: 2
+Number of aggregators:           2
+
+Group  Port-channel  Protocol    Ports
+------+-------------+-----------+----------------------------------------------
+
+2      Po2(SU)           PAgP   Fa0/13(P) Fa0/14(P) Fa0/15(P) Fa0/16(P) Fa0/17(P) Fa0/18(P) 
+3      Po3(SU)           LACP   Gig0/1(P) Gig0/2(P) 
+
+Site#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Site(config)#spanning-tree vlan 1 root primary
+Site(config)#
+Site(config)#end
+
+swicht            mac-address          priority
+Laboratorio2     0050.0F9C.0A4B        32769      
+Laboratorio1     0050.0F9C.0A4B        32769
+Site             0050.0F9C.0A4B        24577                                                 
+                                                      
+
+
